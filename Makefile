@@ -1,11 +1,14 @@
+CC = cc -Wall -c -o
+LD = cc -Wall -o
+ 
 example: example.o base64.o
-	cc -o $@ $^
+	$(LD) $@ $^
 
 example.o: example.c base64.h
-	cc -c -o $@ $<
+	$(CC) $@ $<
 
 base64.o: base64.c base64.h
-	cc -c -o $@ $<
+	$(CC) $@ $<
 
 clean:
 	rm *.o example

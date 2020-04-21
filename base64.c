@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 
 static const char base64en[] = {
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
@@ -23,10 +22,10 @@ static const unsigned char base64de[] = {
 	41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 0,  0,  0,  0,  0
 };
 
-char* b64_encode(char* out, char* in, int in_len)
+int b64_encode(char* out, unsigned char* in, int in_len)
 {
 	register int k = 0, i=0;
-	char a, b;
+	unsigned char a, b;
 	for (; i < in_len; i+=3) {
 		out[k++] = base64en[in[i] >> 2];
 		switch(in_len-i) {
@@ -51,24 +50,24 @@ char* b64_encode(char* out, char* in, int in_len)
 		}
 	}
 	out[k] = '\0';
-	return out;
+	return k;
 }
 
-bool b64_decode(char* out, char* in, int in_len)
+int b64_decode(unsigned char* out, char* in, int in_len)
 {
 	if (in_len & 0x3) {
-		return false;
+		return 0;
 	}
 
 	register int k = 0, i=0;
 	char b, c;
 	for (; i < in_len; i+=4) {
-		b = base64de[in[i+1]];
-		c = base64de[in[i+2]];
-		out[k++] = base64de[in[i]] << 2 | b >> 4;
+		b = base64de[(unsigned char)in[i+1]];
+		c = base64de[(unsigned char)in[i+2]];
+		out[k++] = base64de[(unsigned char)in[i]] << 2 | b >> 4;
 		out[k++] = b << 4 | c >> 2;
-		out[k++] = c << 6 | base64de[in[i+3]];
+		out[k++] = c << 6 | base64de[(unsigned char)in[i+3]];
 	}
-	return true;
+	return k;
 }
 

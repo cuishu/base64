@@ -4,16 +4,22 @@
 
 #include "base64.h"
 
+#define	SIZE	2048
+
 int main()
 {
-	char* str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	unsigned char str[SIZE];
 
-	char* b64buff = malloc(b64_encode_out_size(strlen(str)));
-	puts(b64_encode(b64buff, str, strlen(str)));
+	char* b64buff = malloc(b64_encode_out_size(SIZE));
+	unsigned char* buff = malloc(SIZE);
 
-	char* buff = malloc(b64_decode_out_size(strlen(b64buff)));
-	if (b64_decode(buff, b64buff, strlen(b64buff))) {
-		puts(buff);
+	while (!feof(stdin)) {
+		int n = fread(str, 1, SIZE, stdin);
+		b64_encode(b64buff, str, n);
+		printf("encode output: \n%s\n\n", b64buff);
+		if (b64_decode(buff, b64buff, strlen(b64buff))) {
+			printf("decode output: \n%s\n", (char*)buff);
+		}
 	}
 
 	free(b64buff);
